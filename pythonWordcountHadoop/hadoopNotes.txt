@@ -1,0 +1,58 @@
+[1]. As the Map operation is parallelized the input file is first split to 
+	 several pieces called filesplits.
+	 
+[2]. Then a new map task is created per File Split
+
+[3]. When an individual map task starts it will open a new output writer per configured
+	 reduce task.
+
+[4]. It will then proceed to read its File Split using the RecordReader it gets from the
+	 the specified InputFormat.
+	 
+[5]. InputFormat parses the input and generates key-vale pairs.
+
+[6]. As key-value pairs are read from the RecorsReader they are passed to the configured 
+     Mapper.
+
+[7]. The user supplied Mapper does whatever it wants with the input pair and calls 
+	OutputCollector.collect with key-value pairs of its own choosing. The Map output is 
+	written into a SequenceFile.
+	
+[8]. When Mapper output is collected it is partitioned, which means that it will be
+	 written to the output specified by the Partitioner.
+	 
+[9]. Partitioners are responsible for dividing up the intermediate key space and assigning 
+	 the intermediate key value pairs to the reducers.
+	 
+[10]. In other words, the partioner specifies the task to which an intermediate key value pair
+	  must be copied.
+	  
+[11]. Simplest partioner involves computing the hash value of the key and then taking the mod
+	  of that value with the number of reducers.
+	  
+[12]. This assigns approximately the same number of keys to each reducer(dependent on the quality
+	  of the hash function).
+	  
+[13]. The partioner only considers the key and ignores the value.
+
+[14]. Therefore, a roughly-even partioning of the key space may nevertheless yield large differences
+	  in the number of key-values pairs sent to each reducer.
+	  
+[15]. Thus the most frequent word will occur approximately twice as often as the second most frequent
+	  word, three times as often as the third most frequent word, etc.
+	  
+[16]. Combiners are an optimization in MapReduce that allow for local aggregation before the shuffle
+	  and sort phase.
+	 
+[17]. When the map operation outputs its pairs they are already available in memory.
+
+[18]. If a combiner is used then the map key-value pairs are not immediately written to the output.
+	  instead they are collected in lists, one list per each key value pair.
+
+[19]. For efficiency reasons, sometimes it makes sense to take advantage of this fact by
+	  supplying a combiner class to perform a reduce-type function.
+	  
+[20]. 
+		
+	
+	

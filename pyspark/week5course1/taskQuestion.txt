@@ -1,0 +1,22 @@
+
+Spark assignment 1: Pairs
+Find all the pairs of two consequent words where the first word is “narodnaya”. For each pair, count the number of occurrences in the Wikipedia dump. Print all the pairs with their count in a lexicographical order. Output format is “word_pair <tab> count”, for example:
+red_apple 100500
+crazy_zoo 42
+Note that two words in a pair are concatenated with the underscore character, and the result is in the lowercase.
+One motivation for counting these continuations is to get a better understanding of the language. Some words, like “the”, have a lot of continuations, while others, like “San”, have just a few (“San Francisco”, for example). One can build a language model with these statistics. If you are interested to learn more, search for “n-gram language model” in the Internet.
+Dataset location: /data/wiki/en_articles_part
+The result on the sample dataset:
+
+narodnaya_gazeta 1
+narodnaya_volya 9
+
+
+****************************************************************************
+
+PMI of two words, a & b, is defined as “PMI(a, b) = ln (P(ab) / (P(a) * P(b))”, where P(ab) is the probability of two words coming one after the other, and P(a) and P(b) are probabilities of words a & b respectively.
+You will estimate probabilities with occurrence counts, that is “P(a) = # of occurrences of word a / total number of words”, and “P(ab) = # of occurrences of words ‘a b’ / total number of word pairs”.
+To build an intuition behind the definition, consider the following cases:
+“roman empire”; assume that this is a unique combination, and every occurrence of “roman” is followed by “empire”, and, vice versa, every occurrence of “empire” is preceded by “roman”. In this case, “P(ab) = P(a) = P(b)”, so “PMI(a, b) = -ln P(a) = -ln P(b)”. This quantity increases when the probability of the collocation is low.
+“the doors”; let’s assume that “the” may occur with every word, independently. Thus, “P(ab) = P(a)*P(b)”, and “PMI(a, b) = ln 1 = 0”.
+“green idea / sleeps furiously”; when two words never occur together, “P(ab) = 0”, and “PMI(a, b) = -inf”. Therefore, rare combinations of coupled words have large PMI.
